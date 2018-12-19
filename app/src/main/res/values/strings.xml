@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">payApp</string>
+    <string name="accessibility_service_description">Automate ussd responces </string>
+    <string name="action_settings"> Меню </string>
+    <string name="main"> Главная </string>
+    <string name="manual"> Справка </string>
+</resources>
