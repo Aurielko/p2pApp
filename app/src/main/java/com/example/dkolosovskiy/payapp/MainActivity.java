@@ -162,19 +162,29 @@ public class MainActivity extends AppCompatActivity {
                 number = null;
                 main.updateData(act, cnt, smsResult);
                 main.operation("sms", false, act, cnt, operDest, number);
+                operFlag = true;
             }
         });
         /**Button for delete*/
         btnDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 flag = true;
-                main.checkSmsDefaultApp(true, code);
+                if( operFlag == true) {
+                    main.checkSmsDefaultApp(true, code);
+                } else {
+                    Message msg = new Message();
+                    msg.obj = "Code P2P-014: Please, send sms without saving firstly";
+                    handler.sendMessage(msg);
+
+                }
             }
         });
         /**reinizialization*/
         btnIni.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 btnDiactivate();
+                TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                String operName = telephonyManager.getNetworkOperatorName().toUpperCase();
                 newNumField.setText("");
                 main.updateData(act, cnt, smsResult);
                 number = null;
@@ -224,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
                 sendWithSaveOutput = false;
                 main.updateData(act, cnt, smsResult);
                 main.operation("sms", false, act, cnt, operDest, number);
+                operFlag = true;
             }
         });
         btnSMSNewSave.setOnClickListener(new View.OnClickListener() {
@@ -231,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
                 curOperation = "sms";
                 main.updateData(act, cnt, smsResult);
                 main.operation("sms", false, act, cnt, operDest, number);
+                operFlag = true;
             }
         });
         btnUssdNew.setOnClickListener(new View.OnClickListener() {
@@ -250,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
     static Handler handler;
     Integer code = 777;
     Boolean flag = true;
-
+    Boolean operFlag = false;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Logger.lg("RequestCode " + requestCode);
@@ -258,8 +270,11 @@ public class MainActivity extends AppCompatActivity {
             boolean isDefault = resultCode == Activity.RESULT_OK;
             Logger.lg("IsDefault " + isDefault + " " + flag);
             if (isDefault && flag) {
-                main.deleteSMS(new HashMap<String, String>());
+                if( operFlag == true){
+                main.deleteSMS(new HashMap<String, String>(), cnt);
                 flag = false;
+                    operFlag = false;
+                }
             }
         }
     }
