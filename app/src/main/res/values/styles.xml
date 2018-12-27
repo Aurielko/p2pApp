@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -6,6 +6,40 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="ButtonTheme">
+        <item name="android:autoSizeTextType" tools:targetApi="o">uniform</item>
+        <item name="android:autoSizeMinTextSize" tools:targetApi="o">6sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:background">#e6eef2</item>
+        <item name="android:paddingLeft">1.3dp</item>
+
+
+    </style>
+
+    <style name="TextTheme" >
+        <item name="android:autoSizeTextType" tools:targetApi="o">uniform</item>
+        <item name="android:autoSizeMinTextSize" tools:targetApi="o">6sp</item>
+        <item name=" android:layout_width">match_parent</item>
+        <item name="android:layout_height">31dp</item>
+        <item name=" android:layout_marginLeft">8dp</item>
+        <item name="  android:layout_marginTop">16dp</item>
+        <item name="  android:layout_marginEnd">8dp</item>
+        <item name="  android:layout_marginRight">8dp</item>
+
+    </style>
+    <style name="Table" >
+        <item name="android:autoSizeTextType" tools:targetApi="o">uniform</item>
+        <item name="android:autoSizeMinTextSize" tools:targetApi="o">3sp</item>
+        <item name=" android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+
     </style>
 
 </resources>
