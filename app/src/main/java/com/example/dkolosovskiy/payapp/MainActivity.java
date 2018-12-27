@@ -5,32 +5,20 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.telephony.SubscriptionInfo;
-import android.telephony.SubscriptionManager;
-import android.telephony.TelephonyManager;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Scroller;
 import android.widget.TextView;
 
-import com.p2plib2.PayLib;
-import com.p2plib2.common.CommonFunctions;
-import com.p2plib2.operators.Operator;
-
 import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private Button btnIni;
@@ -72,12 +60,12 @@ public class MainActivity extends AppCompatActivity {
     String regex = "[0-9]+";
     Boolean sendWithSaveOutput = true;
     String curOperation = null;
-    final String[] operators = new String[]{"MTS", "Megafon", "Beeline", "Tele2"};
+    final String[] operators = new String[]{"MTS", "MEGAFON", "BEELINE", "TELE"};
 
     Boolean flagogek = true;
     String curOper;
     boolean curSave;
-
+Boolean operationFlag = false;
     /***/
 
     @Override
@@ -109,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         operLabel = findViewById(R.id.operLabel);
         operList = findViewById(R.id.operList);
         textView = findViewById(R.id.textView);
-        mtcNum = findViewById(R.id.numMTC);
+        mtcNum = findViewById(R.id.numMts);
         beeNum = findViewById(R.id.numBee);
         teleNum = findViewById(R.id.numTele);
         megaNum = findViewById(R.id.numMega);
@@ -141,100 +129,83 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String newNum = mtcNum.getText().toString();
                 String newSum = mtcSum.getText().toString();
+                Message msg = new Message();
                 if ((newNum != null || newNum != "") && newNum.length() == 10 && newNum.matches(regex)) {
-                    nums.put("MTC", newNum);
-                    Message msg = new Message();
-                    msg.obj = "Новый номер " + newNum + "сохранен ";
-                    handler.sendMessage(msg);
+                    nums.put("MTS", newNum);
+                    msg.obj = "Новый номер " + newNum;
                 } else {
-                    Message msg = new Message();
-                    msg.obj = "Не корректный формат номера. Пожалуйста, введите 10-й номер";
-                    handler.sendMessage(msg);
+                    msg.obj = "Не корректный формат номера. Пожалуйста, введите десятизначный номер (например 9876543210)";
                 }
-                if ((newSum != null) && newSum.matches(regex)) {
-                    sums.put("MTC", newSum);
-                } else if(newSum == ""){
-                    sums.put("MTC", null);
-                } else {
-                    Message msg = new Message();
-                    msg.obj = "Введите сумму - целое число";
-                    handler.sendMessage(msg);
+                Logger.lg("sum " + newSum);
+                if (newSum.matches(regex)) {
+                    sums.put("MTS", newSum);
+                    msg.obj = msg.obj + " новая сумма " + newSum;
+                } else if (newSum == "") {
+                    sums.put("MTS", null);
                 }
+                Logger.lg("DSD " + sums.toString() + " " + nums.toString());
+                handler.sendMessage(msg);
             }
         });
         beeSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String newNum = beeNum.getText().toString();
                 String newSum = beeSum.getText().toString();
+                Message msg = new Message();
                 if ((newNum != null || newNum != "") && newNum.length() == 10 && newNum.matches(regex)) {
                     nums.put("BEELINE", newNum);
-                    Message msg = new Message();
-                    msg.obj = "Новый номер " + newNum + "сохранен ";
-                    handler.sendMessage(msg);
+                    msg.obj = "Новый номер " + newNum;
                 } else {
-                    Message msg = new Message();
                     msg.obj = "Не корректный формат номера. Пожалуйста, введите 10-й номер";
-                    handler.sendMessage(msg);
                 }
-                if ((newSum != null ) && newSum.matches(regex)) {
+                if (newSum.matches(regex)) {
                     sums.put("BEELINE", newSum);
-                } else if(newSum == ""){
-                    sums.put("MTC", null);
-                } else {
-                    Message msg = new Message();
-                    msg.obj = "Введите сумму - целое число";
-                    handler.sendMessage(msg);
+                    msg.obj = msg.obj + " новая сумма " + newSum;
+                } else if (newSum == "") {
+                    sums.put("BEELINE", null);
                 }
+                handler.sendMessage(msg);
             }
         });
         teleSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String newNum = teleNum.getText().toString();
                 String newSum = teleSum.getText().toString();
+                Message msg = new Message();
                 if ((newNum != null || newNum != "") && newNum.length() == 10 && newNum.matches(regex)) {
                     nums.put("TELE", newNum);
-                    Message msg = new Message();
-                    msg.obj = "Новый номер " + newNum + "сохранен ";
-                    handler.sendMessage(msg);
+                    msg.obj = "Новый номер " + newNum;
                 } else {
-                    Message msg = new Message();
                     msg.obj = "Не корректный формат номера. Пожалуйста, введите 10-й номер";
-                    handler.sendMessage(msg);
                 }
-                if ((newSum != null ) && newSum.matches(regex)) {
+                if (newSum.matches(regex)) {
                     sums.put("TELE", newSum);
-                } else if(newSum == ""){
-                    sums.put("MTC", null);
-                } else {
-                    Message msg = new Message();
-                    msg.obj = "Введите сумму - целое число";
-                    handler.sendMessage(msg);
+                    msg.obj = msg.obj + " новая сумма " + newSum;
+                } else if (newSum == "") {
+                    sums.put("TELE", null);
                 }
+                handler.sendMessage(msg);
             }
         });
         megaSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String newNum = megaNum.getText().toString();
                 String newSum = megaSum.getText().toString();
+                Message msg = new Message();
                 if ((newNum != null || newNum != "") && newNum.length() == 10 && newNum.matches(regex)) {
                     nums.put("MEGAFON", newNum);
-                    Message msg = new Message();
-                    msg.obj = "Новый номер " + newNum + "сохранен ";
-                    handler.sendMessage(msg);
+                    msg.obj = "Новый номер " + newNum;
                 } else {
-                    Message msg = new Message();
                     msg.obj = "Не корректный формат номера. Пожалуйста, введите 10-й номер";
-                    handler.sendMessage(msg);
+
                 }
-                if ((newSum != null ) && newSum.matches(regex)) {
+                if (newSum.matches(regex)) {
                     sums.put("MEGAFON", newSum);
-                } else if(newSum == ""){
-                    sums.put("MTC", null);
-                } else {
-                    Message msg = new Message();
-                    msg.obj = "Введите сумму - целое число";
-                    handler.sendMessage(msg);
+                    msg.obj = msg.obj + " новая сумма " + newSum;
+                } else if (newSum == "") {
+                    sums.put("MEGAFON", null);
                 }
+                handler.sendMessage(msg);
             }
         });
 
@@ -251,20 +222,22 @@ public class MainActivity extends AppCompatActivity {
                             num = nums.get(operDest);
                         }
                         if (sums.containsKey(operDest)) {
-                            sum = nums.get(operDest);
+                            sum = sums.get(operDest);
                         }
                     }
                     main.operation("ussd", true, act, cnt, operDest, num, sum);
+                    operationFlag = true;
                 } else {
-                    String n=null;
+                    String n = null;
                     String sum = null;
                     if (nums.containsKey(operDest)) {
                         n = nums.get(operDest);
                     }
                     if (sums.containsKey(operDest)) {
-                        sum = nums.get(operDest);
+                        sum = sums.get(operDest);
                     }
                     main.operation("sms", curSave, act, cnt, operDest, n, sum);
+                    operationFlag = true;
                 }
                 dialog.dismiss();
                 dialog.cancel();
@@ -293,13 +266,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 main.updateData(act, cnt, smsResult);
                 main.operation("sms", true, act, cnt, operDest, null, null);
+                operationFlag = true;
             }
         });
         btnSmsUnSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 main.updateData(act, cnt, smsResult);
                 main.operation("sms", false, act, cnt, operDest, null, null);
-                operFlag = true;
+                operationFlag = true;
             }
         });
 
@@ -326,13 +300,12 @@ public class MainActivity extends AppCompatActivity {
         btnDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 flag = true;
-                if (operFlag == true) {
+                if(operationFlag) {
                     main.checkSmsDefaultApp(true, code);
                 } else {
                     Message msg = new Message();
-                    msg.obj = "Code P2P-014: Please, send sms without saving firstly";
+                    msg.obj = " Пожалуйста, проведите хотя бы одну операцию оплаты";
                     handler.sendMessage(msg);
-
                 }
             }
         });
@@ -352,8 +325,6 @@ public class MainActivity extends AppCompatActivity {
 
         showSimSetting.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //ACTION_DATA_ROAMING_SETTINGS
-                //new Intent(Settings.ACTION_MEMORY_CARD_SETTINGS
                 startActivityForResult(new Intent(Settings.ACTION_SETTINGS), 1);
             }
         });
@@ -367,7 +338,6 @@ public class MainActivity extends AppCompatActivity {
     static Handler handler;
     Integer code = 777;
     Boolean flag = true;
-    Boolean operFlag = false;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -376,11 +346,8 @@ public class MainActivity extends AppCompatActivity {
             boolean isDefault = resultCode == Activity.RESULT_OK;
             Logger.lg("IsDefault " + isDefault + " " + flag);
             if (isDefault && flag) {
-                if (operFlag == true) {
-                    main.deleteSMS(new HashMap<String, String>(), cnt);
-                    flag = false;
-                    operFlag = false;
-                }
+                main.deleteSMS(new HashMap<String, String>(), cnt);
+                flag = false;
             }
         }
     }
@@ -415,17 +382,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btnDiactivate() {
-          btnSmsSave.setEnabled(false);
-          btnSmsUnSave.setEnabled(false);
-          btnSMSNewSave.setEnabled(false);
-          btnSMSNewUnSave.setEnabled(false);
-          btnUssd.setEnabled(false);
-          btnUssdNew.setEnabled(false);
-          btnDelete.setEnabled(false);
-          mtcSave.setEnabled(false);
-          beeSave.setEnabled(false);
-          teleSave.setEnabled(false);
-          megaSave.setEnabled(false);
+        btnSmsSave.setEnabled(false);
+        btnSmsUnSave.setEnabled(false);
+        btnSMSNewSave.setEnabled(false);
+        btnSMSNewUnSave.setEnabled(false);
+        btnUssd.setEnabled(false);
+        btnUssdNew.setEnabled(false);
+        btnDelete.setEnabled(false);
+        mtcSave.setEnabled(false);
+        beeSave.setEnabled(false);
+        teleSave.setEnabled(false);
+        megaSave.setEnabled(false);
     }
 
     public void btnActivated() {

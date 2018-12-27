@@ -2,8 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:windowSoftInputMode="adjustResize"
     tools:context=".MainActivity">
 
@@ -11,18 +11,16 @@
         android:id="@+id/linearL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="15dp">
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp">
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/btnIni"
@@ -32,232 +30,209 @@
             <Button
                 android:id="@+id/btnSimParam"
                 style="@style/ButtonTheme"
-                android:text="Посмотреть текущих операторов для СМС/звонков/сети в настройках телефона" />
+                android:text="Посмотреть текущих операторов для СМС/звонков/интернета в настройках телефона (переход в настройки телефона)" />
 
             <Button
                 android:id="@+id/btnSmsSave"
                 style="@style/ButtonTheme"
-                android:text="Оплата через SMS с его сохранением на номер из файла конфигурации" />
+                android:text="Оплата на номер из файла конфигурации через SMS с его сохранением" />
 
             <Button
                 android:id="@+id/btnSmsUnSave"
                 style="@style/ButtonTheme"
-                android:text="Оплата через SMS без его сохранения на номер из файла конфигурации" />
+                android:text="Оплата на номер из файла конфигурации через SMS без сохранения исходящего СМС (до версии Android 4.4)" />
 
             <Button
                 android:id="@+id/btnUssd"
                 style="@style/ButtonTheme"
-                android:text="Оплата через USSD-запрос" />
+                android:text="Оплата через USSD-запрос на номер из файла конфигурации" />
 
             <Button
                 android:id="@+id/btnUssdNew"
                 style="@style/ButtonTheme"
-                android:text="Оплата через USSD-запрос на указанный номер указанной суммы" />
+                android:text="Оплата на указанный номер указанной суммы через USSD-запрос" />
 
             <Button
                 android:id="@+id/btnSmsSaveNew"
                 style="@style/ButtonTheme"
-                android:text="Оплата через SMS с его сохранением на указанный номер указанной суммы" />
+                android:text="Оплата на указанный номер указанной суммы через SMS с его сохранением " />
 
             <Button
                 android:id="@+id/btnSmsUnSaveNew"
                 style="@style/ButtonTheme"
-                android:text="Оплата через SMS без его сохранения на указанный номер указанной суммы" />
+                android:text="Оплата на указанный номер указанной суммы через SMS без сохранения исходящего
+                СМС (до версии Android 4.4)" />
 
             <Button
                 android:id="@+id/btnDelete"
                 style="@style/ButtonTheme"
-                android:text="Удалить две последние СМС во входящих и исходящее сообщение с кодом подтверждения
-            для выбранного оператора" />
+                android:text="Удалить все СМС, связанные с транзакциями" />
 
             <TextView
                 android:id="@+id/operLabel"
                 style="@style/TextTheme"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:text="Доступные на данном телефоне сим-карты и их операторы"
-                android:textAlignment="center"
-                android:textColor="@color/colorAccent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/linearL"
-                app:layout_constraintTop_toBottomOf="@+id/operList" />
+                android:text="\tДоступные на данном телефоне сим-карты и их операторы"
+                android:textAlignment="center" />
 
             <TextView
                 android:id="@+id/operList"
                 style="@style/TextTheme"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:text="Имена доступных операторов и их номера их сим-карт"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/linearL"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:text="\tИмена доступных операторов и их номера их сим-карт" />
 
 
             <TextView
                 android:id="@+id/textView"
                 style="@style/TextTheme"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                android:maxLines="10"
-                android:scrollbars="horizontal"
-                android:isScrollContainer="true"
-                android:scrollbarStyle="outsideOverlay"
-                android:fadeScrollbars="false"
-                android:text="Здесь будет код и текст последнего сообщения с номера оператора или статус приложения"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/linearL"
-                app:layout_constraintTop_toBottomOf="@+id/operLabel"
-                app:layout_constraintVertical_bias="0.975" />
+                android:text="\t Здесь будет код и текст последнего сообщения с номера оператора или статус приложения" />
 
             <TableLayout
                 android:id="@+id/tableLayout2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginBottom="5dp"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@+id/linearLayout"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                app:layout_constraintVertical_bias="0.29">
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/back"
+                android:shrinkColumns="4"
+                android:stretchColumns="*">
 
-                <TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                    <TextView
-                        style="@style/Table"
-                        android:text="Оператор"
-                        android:textColor="@color/colorAccent" />
+                <TextView
+                    style="@style/Table"
+                    android:gravity="center"
+                    android:text="\tОператор" />
 
-                    <TextView
-                        style="@style/Table"
-                        android:text="  Номер"
-                        android:textColor="@color/colorAccent" />
+                <TextView
+                    style="@style/Table"
+                    android:text="\tНомер"
+                    />
 
-                    <TextView
-                        style="@style/Table"
-                        android:text="  Сумма"
-                        android:textColor="@color/colorAccent" />
+                <TextView
+                    style="@style/Table"
+                    android:text="\tСумма"
+                    android:inputType="number"
+                    />
 
-                    <TextView
-                        style="@style/Table"
-                        android:text="  Сохранить"
-                        android:textColor="@color/colorAccent" />
-                </TableRow>
+                <TextView
+                    style="@style/Table"
+                    android:text="\tSave"
+                    />
+            </TableRow>
 
-                <TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                    <TextView
-                        style="@style/Table"
-                        android:text="МТС" />
+                <TextView
+                    style="@style/Table"
+                    android:text="МТС"
+                    android:textAlignment="center" />
 
-                    <EditText
-                        android:id="@+id/sumMts"
-                        style="@style/Table"
-                        android:hint="Номер" />
+                <EditText
+                    android:id="@+id/numMts"
+                    style="@style/Table"
+                    android:hint="Номер"
+                    />
 
-                    <EditText
-                        android:id="@+id/numMTC"
-                        style="@style/Table"
-                        android:hint="Сумма" />
+                <EditText
+                    android:id="@+id/sumMts"
+                    style="@style/Table"
+                    android:maxLength="3"
+                    android:hint="Сумма"
+                    android:inputType="number"/>
 
-                    <Button
-                        android:id="@+id/saveMTC"
-                        android:autoSizeMinTextSize="3sp"
-                        android:autoSizeTextType="uniform"
-                        android:text="Сохранить" />
-                </TableRow>
+                <Button
+                    android:id="@+id/saveMTC"
+                    style="@style/ButOper"
+                    android:text="Save"
+                    />
+            </TableRow>
 
-                <TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                    <TextView
-                        style="@style/Table"
-                        android:text="Билайн" />
+                <TextView
+                    style="@style/Table"
+                    android:text="Билайн"
+                    android:textAlignment="center" />
 
-                    <EditText
-                        android:id="@+id/sumBee"
-                        style="@style/Table"
-                        android:hint="Номер" />
+                <EditText
+                    android:id="@+id/numBee"
+                    style="@style/Table"
+                    android:hint="Номер" />
 
-                    <EditText
-                        android:id="@+id/numBee"
-                        style="@style/Table"
-                        android:hint="Сумма" />
+                <EditText
+                    android:id="@+id/sumBee"
+                    android:maxLength="3"
+                    style="@style/Table"
+                    android:hint="Сумма"
+                    android:inputType="number"/>
 
-                    <Button
-                        android:id="@+id/saveBee"
-                        android:autoSizeMinTextSize="3sp"
-                        android:autoSizeTextType="uniform"
-                        android:text="Сохранить" />
-                </TableRow>
+                <Button
+                    android:id="@+id/saveBee"
+                    style="@style/ButOper"
+                    android:text="Save"
+                    />
+            </TableRow>
 
-                <TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                    <TextView
-                        style="@style/Table"
-                        android:text="Теле2" />
+                <TextView
+                    style="@style/Table"
+                    android:text="Теле2"
+                    android:textAlignment="center" />
 
-                    <EditText
-                        android:id="@+id/sumTele"
-                        style="@style/Table"
-                        android:hint="Номер" />
+                <EditText
+                    android:id="@+id/numTele"
+                    style="@style/Table"
+                    android:hint="Номер" />
 
-                    <EditText
-                        android:id="@+id/numTele"
-                        style="@style/Table"
-                        android:hint="Сумма" />
+                <EditText
+                    android:id="@+id/sumTele"
+                    android:maxLength="3"
+                    style="@style/Table"
+                    android:hint="Сумма"
+                    android:inputType="number"/>
 
-                    <Button
-                        android:id="@+id/saveTele"
-                        android:autoSizeMinTextSize="3sp"
-                        android:autoSizeTextType="uniform"
-                        android:text="Сохранить" />
-                </TableRow>
+                <Button
+                    android:id="@+id/saveTele"
+                    style="@style/ButOper"
+                    android:text="Save" />
+            </TableRow>
 
-                <TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                    <TextView
-                        style="@style/Table"
-                        android:text="Мегафон" />
+                <TextView
+                    style="@style/Table"
+                    android:text="Мегафон"
+                    android:textAlignment="center" />
 
-                    <EditText
-                        android:id="@+id/sumMega"
-                        style="@style/Table"
-                        android:hint="Номер" />
+                <EditText
+                    android:id="@+id/numMega"
+                    style="@style/Table"
+                    android:hint="Номер" />
 
-                    <EditText
-                        android:id="@+id/numMega"
-                        style="@style/Table"
-                        android:hint="Сумма" />
+                <EditText
+                    android:id="@+id/sumMega"
+                    style="@style/Table"
+                    android:maxLength="3"
+                    android:hint="Сумма"
+                    android:inputType="number"/>
 
-                    <Button
-                        android:id="@+id/saveMega"
-                        android:autoSizeMinTextSize="3sp"
-                        android:autoSizeTextType="uniform"
-                        android:text="Сохранить" />
-                </TableRow>
-            </TableLayout>
-        </LinearLayout>
-    </ScrollView>
-</android.support.constraint.ConstraintLayout>
+                <Button
+                    android:id="@+id/saveMega"
+                    style="@style/ButOper"
+                    android:text="Save" />
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+</ScrollView></android.support.constraint.ConstraintLayout>
