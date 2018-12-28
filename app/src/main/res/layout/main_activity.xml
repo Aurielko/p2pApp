@@ -60,8 +60,7 @@
             <Button
                 android:id="@+id/btnSmsUnSaveNew"
                 style="@style/ButtonTheme"
-                android:text="Оплата на указанный номер указанной суммы через SMS без сохранения исходящего
-                СМС (до версии Android 4.4)" />
+                android:text="Оплата на указанный номер указанной суммы через SMS без сохранения исходящего СМС (до версии Android 4.4)" />
 
             <Button
                 android:id="@+id/btnDelete"

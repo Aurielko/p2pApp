@@ -143,7 +143,6 @@ Boolean operationFlag = false;
                 } else if (newSum == "") {
                     sums.put("MTS", null);
                 }
-                Logger.lg("DSD " + sums.toString() + " " + nums.toString());
                 handler.sendMessage(msg);
             }
         });
@@ -246,7 +245,7 @@ Boolean operationFlag = false;
         btnUssd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 flagogek = false;
-                main.updateData(act, cnt, smsResult);
+            //    main.updateData(act, cnt, smsResult);
                 curOper = "ussd";
                 AlertDialog alertD = builderOperator.create();
                 alertD.show();
@@ -255,7 +254,7 @@ Boolean operationFlag = false;
         btnUssdNew.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 flagogek = true;
-                main.updateData(act, cnt, smsResult);
+              //  main.updateData(act, cnt, smsResult);
                 curOper = "ussd";
                 AlertDialog alertD = builderOperator.create();
                 alertD.show();
@@ -264,14 +263,14 @@ Boolean operationFlag = false;
         /**SMS*/
         btnSmsSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                main.updateData(act, cnt, smsResult);
+               // main.updateData(act, cnt, smsResult);
                 main.operation("sms", true, act, cnt, operDest, null, null);
                 operationFlag = true;
             }
         });
         btnSmsUnSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                main.updateData(act, cnt, smsResult);
+             //   main.updateData(act, cnt, smsResult);
                 main.operation("sms", false, act, cnt, operDest, null, null);
                 operationFlag = true;
             }
@@ -279,7 +278,7 @@ Boolean operationFlag = false;
 
         btnSMSNewSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                main.updateData(act, cnt, smsResult);
+              //  main.updateData(act, cnt, smsResult);
                 curOper = "sms";
                 curSave = true;
                 AlertDialog alertD = builderOperator.create();
@@ -288,7 +287,7 @@ Boolean operationFlag = false;
         });
         btnSMSNewUnSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                main.updateData(act, cnt, smsResult);
+               // main.updateData(act, cnt, smsResult);
                 curOper = "sms";
                 curSave = false;
                 AlertDialog alertD = builderOperator.create();
@@ -313,7 +312,7 @@ Boolean operationFlag = false;
         btnIni.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 btnDiactivate();
-                main.updateData(act, cnt, smsResult);
+              //  main.updateData(act, cnt, smsResult);
                 String mass[] = main.operatorChooser(MainActivity.cnt, null, 0);
                 String result = null;
                 for (int k = 0; k < mass.length; k++) {
