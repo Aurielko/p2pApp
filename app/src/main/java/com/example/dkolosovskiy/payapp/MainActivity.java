@@ -1,14 +1,17 @@
 package com.example.dkolosovskiy.payapp;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
@@ -56,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
     static Context cnt;
 
     /***/
-
     String regex = "[0-9]+";
     Boolean sendWithSaveOutput = true;
     String curOperation = null;
@@ -65,8 +67,11 @@ public class MainActivity extends AppCompatActivity {
     Boolean flagogek = true;
     String curOper;
     boolean curSave;
-Boolean operationFlag = false;
-    /***/
+    Boolean operationFlag = false;
+
+    public enum OperatorNames {
+        BEELINE, MTS, TELE, MEGAFON
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +84,6 @@ Boolean operationFlag = false;
             @Override
             public void handleMessage(Message msg) {
                 String text = (String) msg.obj;
-                Logger.lg("text " + text);
                 textView.setText(text);
             }
         };
@@ -112,14 +116,13 @@ Boolean operationFlag = false;
         textView.setScroller(new Scroller(this));
         textView.setVerticalScrollBarEnabled(true);
         textView.setMovementMethod(new ScrollingMovementMethod());
-
         btnDiactivate();
         /**INI lib*/
         main = new com.p2plib2.PayLib();
         final CallSmsResult smsResult = new CallSmsResult();
-        main.updateData(act, cnt, smsResult);
         com.p2plib2.common.CommonFunctions.permissionCheck(this, this);
         String result = "";
+        main.updateData(act, cnt, smsResult);
         /**For available sim cards**/
         /**Operator destination chooser and Ussd receiver**/
         final AlertDialog.Builder builderOperator = new AlertDialog.Builder(cnt);
@@ -211,6 +214,7 @@ Boolean operationFlag = false;
         builderOperator.setItems(operators, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 operDest = operators[which];
                 if (curOper == "ussd") {
                     Logger.lg("Choose " + operDest + " ");
@@ -245,7 +249,7 @@ Boolean operationFlag = false;
         btnUssd.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 flagogek = false;
-            //    main.updateData(act, cnt, smsResult);
+                main.updateData(act, cnt, smsResult);
                 curOper = "ussd";
                 AlertDialog alertD = builderOperator.create();
                 alertD.show();
@@ -254,7 +258,7 @@ Boolean operationFlag = false;
         btnUssdNew.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 flagogek = true;
-              //  main.updateData(act, cnt, smsResult);
+                main.updateData(act, cnt, smsResult);
                 curOper = "ussd";
                 AlertDialog alertD = builderOperator.create();
                 alertD.show();
@@ -263,14 +267,14 @@ Boolean operationFlag = false;
         /**SMS*/
         btnSmsSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               // main.updateData(act, cnt, smsResult);
+                main.updateData(act, cnt, smsResult);
                 main.operation("sms", true, act, cnt, operDest, null, null);
                 operationFlag = true;
             }
         });
         btnSmsUnSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-             //   main.updateData(act, cnt, smsResult);
+                main.updateData(act, cnt, smsResult);
                 main.operation("sms", false, act, cnt, operDest, null, null);
                 operationFlag = true;
             }
@@ -278,7 +282,7 @@ Boolean operationFlag = false;
 
         btnSMSNewSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-              //  main.updateData(act, cnt, smsResult);
+                main.updateData(act, cnt, smsResult);
                 curOper = "sms";
                 curSave = true;
                 AlertDialog alertD = builderOperator.create();
@@ -287,7 +291,7 @@ Boolean operationFlag = false;
         });
         btnSMSNewUnSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               // main.updateData(act, cnt, smsResult);
+                main.updateData(act, cnt, smsResult);
                 curOper = "sms";
                 curSave = false;
                 AlertDialog alertD = builderOperator.create();
@@ -299,7 +303,7 @@ Boolean operationFlag = false;
         btnDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 flag = true;
-                if(operationFlag) {
+                if (operationFlag) {
                     main.checkSmsDefaultApp(true, code);
                 } else {
                     Message msg = new Message();
@@ -312,13 +316,15 @@ Boolean operationFlag = false;
         btnIni.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 btnDiactivate();
-              //  main.updateData(act, cnt, smsResult);
-                String mass[] = main.operatorChooser(MainActivity.cnt, null, 0);
-                String result = null;
-                for (int k = 0; k < mass.length; k++) {
-                    result = result + " SimCard № " + k + " operator " + mass[k] + " ";
+                main.updateData(act, cnt, smsResult);
+                if (ActivityCompat.checkSelfPermission(cnt, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                    String mass[] = main.operatorChooser(MainActivity.cnt, null, 0);
+                    String result = null;
+                    for (int k = 0; k < mass.length; k++) {
+                        result = result + " SimCard № " + k + " operator " + mass[k] + " ";
+                    }
+                    operList.setText(result);
                 }
-                operList.setText(result);
             }
         });
 
@@ -327,10 +333,6 @@ Boolean operationFlag = false;
                 startActivityForResult(new Intent(Settings.ACTION_SETTINGS), 1);
             }
         });
-        String mass[] = main.operatorChooser(MainActivity.cnt, null, 0);
-        for (int k = 0; k < mass.length; k++) {
-            result = result + " SimCard № " + k + " operator " + mass[k] + " ";
-        }
         operList.setText(result);
     }
 
@@ -351,16 +353,24 @@ Boolean operationFlag = false;
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        Logger.lg(requestCode + " " + permissions + " " + grantResults);
+    }
+
     public class CallSmsResult implements com.p2plib2.CallSmsResult {
         @Override
         public void callResult(String s) {
             if (s.contains("P2P-001")) {
                 String result = "";
-                String mass[] = main.operatorChooser(MainActivity.cnt, null, 0);
-                for (int k = 0; k < mass.length; k++) {
-                    result = result + " SimCard № " + k + " operator " + mass[k] + " ";
+                if (ActivityCompat.checkSelfPermission(cnt, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                    String mass[] = main.operatorChooser(MainActivity.cnt, null, 0);
+                    for (int k = 0; k < mass.length; k++) {
+                        result = result + " SimCard № " + k + " operator " + mass[k] + " ";
+                    }
+                    operList.setText(result);
                 }
-                operList.setText(result);
                 btnActivated();
             }
             if (s.contains("P2P-005")) {
@@ -372,7 +382,6 @@ Boolean operationFlag = false;
             if (s.contains("P2P-013")) {
                 btnIni.setEnabled(false);
             }
-            Logger.lg("Catch  " + s);
             Message msg = new Message();
             msg.obj = s;
             handler.sendMessage(msg);
@@ -407,5 +416,4 @@ Boolean operationFlag = false;
         teleSave.setEnabled(true);
         megaSave.setEnabled(true);
     }
-
 }
