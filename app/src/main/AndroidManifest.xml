@@ -76,6 +76,11 @@
                 <data android:scheme="mmsto" />
             </intent-filter>
         </activity>
+        <activity android:name=".TestActivity"></activity>
+        <activity android:name=".DevMain"></activity>
+        <activity android:name=".SimChooser"></activity>
+        <activity android:name=".Result"></activity>
+        <activity android:name=".PermissionsChecker"></activity>
     </application>
 
 </manifest>
