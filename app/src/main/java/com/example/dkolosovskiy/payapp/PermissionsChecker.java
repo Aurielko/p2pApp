@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import com.p2plib2.common.CommonFunctions;
@@ -21,12 +20,18 @@ public class PermissionsChecker extends Activity {
     boolean ini = false;
 
     public Boolean checkPermissions() {
+        Logger.lg((ActivityCompat.checkSelfPermission(cnt, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED)
+               + " " +  (ActivityCompat.checkSelfPermission(cnt, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED)
+                + " " +  (ActivityCompat.checkSelfPermission(cnt, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED)
+                + " " +  (ActivityCompat.checkSelfPermission(cnt, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED)
+                + " " +  (ActivityCompat.checkSelfPermission(cnt, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED)
+                + " " +  ActivityCompat.checkSelfPermission(cnt, Manifest.permission.MODIFY_PHONE_STATE));
         return (ActivityCompat.checkSelfPermission(cnt, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(cnt, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(cnt, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(cnt, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(cnt, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(cnt, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED);
+                && ActivityCompat.checkSelfPermission(cnt, Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED)
+                /*&& ActivityCompat.checkSelfPermission(cnt, Manifest.permission.MODIFY_PHONE_STATE) == PackageManager.PERMISSION_GRANTED)*/;
     }
 
     @Override
@@ -36,13 +41,19 @@ public class PermissionsChecker extends Activity {
         cnt = this;
         setContentView(R.layout.permission_explain);
         butPermission = findViewById(R.id.butPro);
+        Logger.lg(checkPermissions() + "  check " + USSDController.isAccessiblityServicesEnable(cnt));
         if (checkPermissions() && USSDController.isAccessiblityServicesEnable(cnt)) {
             Intent intent = new Intent(PermissionsChecker.this, SimChooser.class);
             startActivity(intent);
         } else {
             butPermission.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    CommonFunctions.permissionCheck(cnt, act);
+                    if (checkPermissions() && USSDController.isAccessiblityServicesEnable(cnt)) {
+                        Intent intent = new Intent(PermissionsChecker.this, SimChooser.class);
+                        startActivity(intent);
+                    } else {
+                        CommonFunctions.permissionCheck(cnt, act);
+                    }
                 }
             });
         }
@@ -64,7 +75,7 @@ public class PermissionsChecker extends Activity {
             }
         } else if (permissionAll && USSDController.isAccessiblityServicesEnable(cnt)) {
             Logger.lg("ini");
-            ini=true;
+            ini = true;
             Intent intent = new Intent(PermissionsChecker.this, SimChooser.class);
             startActivity(intent);
         }

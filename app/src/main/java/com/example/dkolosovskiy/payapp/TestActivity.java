@@ -1,15 +1,19 @@
 package com.example.dkolosovskiy.payapp;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Telephony;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -18,7 +22,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.p2plib2.Simple.PayLib;
+import com.p2plib2.PayLib;
 import com.p2plib2.common.CommonFunctions;
 import com.p2plib2.ussd.USSDController;
 
@@ -76,9 +80,8 @@ public class TestActivity extends AppCompatActivity implements CompoundButton.On
         }
         /**Lib ini*/
         operation = Operation.SMS.toString();
-        main = new PayLib();
         final CallSmsResult smsResult = new CallSmsResult();
-        main.updateData(act, cnt, smsResult, true, simNum, operName);
+        main = new PayLib(act, cnt, smsResult, true);
         /**MTS Special*/
         final AlertDialog.Builder builderOperator = new AlertDialog.Builder(cnt);
         builderOperator.setTitle("Choose operator for destination ussd");
@@ -88,7 +91,7 @@ public class TestActivity extends AppCompatActivity implements CompoundButton.On
                 operDest = operators[which];
                 Logger.lg("Choose " + operDest + " ");
                 operationId = System.currentTimeMillis();
-                main.operation(operationId, operation.toLowerCase(), act, cnt, operDest, number, summa);
+                main.operation(operationId, operation.toUpperCase(), act, cnt, operDest, number, summa, simNum);
                 dialog.dismiss();
                 dialog.cancel();
             }
@@ -111,9 +114,9 @@ public class TestActivity extends AppCompatActivity implements CompoundButton.On
                             }
                         } else {
                             Logger.lg(" number " + number + "  summa " + summa
-                                    + "  " + operation);
+                                    + "  " + operation  + " sim num " + simNum);
                             operationId = System.currentTimeMillis();
-                            main.operation(operationId, operation.toLowerCase(), act, cnt, "empty", number, summa);
+                            main.operation(operationId, operation.toUpperCase(), act, cnt, "empty", number, summa, simNum);
                         }
                     } else {
                         Toast.makeText(cnt, "Неверный формат номера или суммы",
@@ -129,35 +132,36 @@ public class TestActivity extends AppCompatActivity implements CompoundButton.On
 
     private void getOperatorParam(String str) {
         Logger.lg("str " + str + "  " + str.trim().substring(str.indexOf("sim") + 3));
-        operName = CommonFunctions.formatOperMame(str.trim().substring(0, str.indexOf("sim")).trim());
+        operName = CommonFunctions.formatOperName(str.trim().substring(0, str.indexOf("sim")).trim());
         simNum = Integer.parseInt(str.trim().substring(str.indexOf("sim ") + 4).trim());
     }
 
     public class CallSmsResult implements com.p2plib2.CallSmsResult {
         @Override
         public void callResult(String str) {
-            Logger.lg("catch " + str);
+            Logger.lg("catch " + str + " " + str.contains("-001:"));
             if (str.contains("Process ") && !str.contains("Process null")) {
-                Logger.lg(" вып  " + str.toLowerCase().contains("выполн") + " " + str.toLowerCase().contains("не дост"));
-//                if (str.toLowerCase().contains(" про") || str.toLowerCase().contains("отказ")
-//                        || str.toLowerCase().contains("осущ") || str.toLowerCase().contains("выполн")
-//                        || str.toLowerCase().contains("успеш") || str.toLowerCase().contains("удал")
-//                        || str.toLowerCase().contains("ошиб")) {
-//                    Intent intent = new Intent(TestActivity.this, Result.class);
-//                    intent.putExtra("Result", formatResult(str));
-//                    startActivity(intent);
-//                } else {
-//                    Logger.lg("catch " + str);
-//
-//                }
-                if (!str.toLowerCase().contains("жида") && !str.toLowerCase().contains("принят")) {
+                btn.setEnabled(true);
+                Logger.lg(" вып  " + str);
+                if (!str.toLowerCase().contains("жида") && !str.toLowerCase().contains("принят") && !str.contains("-001:")
+                        && !str.toLowerCase().contains("ответ") && !str.toLowerCase().contains("к оплате")) {
                     Intent intent = new Intent(TestActivity.this, Result.class);
                     intent.putExtra("Result", formatResult(str));
+                    if (str.contains("Process ") && !str.contains("Process null") ) {
+                        String sy = str.toLowerCase().replaceAll("\\[", "").replaceAll("\\]", "").trim()
+                                .substring(str.indexOf("process ") + 8);
+//                        Logger.lg("CODE "  + " " +  sy.trim().substring(0, str.indexOf("code")));
+                        try {
+                            //main.clearProcess(sy);
+                        } catch (Exception e) {
+                            Logger.lg(" error " + sy + "  " + e.getMessage());
+                        }
+                    }
+                    Logger.lg("fgrt");
                     startActivity(intent);
                 }
-//            Message msg = new Message();
-//            msg.obj = s;
-//            handler.sendMessage(msg);
+            } else if(str.contains("-001:")){
+                btn.setEnabled(true);
             }
         }
     }
@@ -170,19 +174,25 @@ public class TestActivity extends AppCompatActivity implements CompoundButton.On
                 || str.toLowerCase().contains("не осущ") || str.toLowerCase().contains("не выполн")
                 || str.toLowerCase().contains("не успеш") || str.toLowerCase().contains("не удал")
                 || str.toLowerCase().contains("ошиб")
-                || str.toLowerCase().contains("неверн")) {
-            if(str.toLowerCase().contains("ошибка отпра")){
-                result = "Error: Платеж не выполнен по причине: " + str.substring(str.indexOf("] Code")+2);
+                || str.toLowerCase().contains("неверн")
+                || str.toLowerCase().contains("не мож")
+                || str.toLowerCase().contains("нельз")
+                || str.toLowerCase().contains("заблокир")
+                || str.toLowerCase().contains("поздн")
+                || str.toLowerCase().contains("недоступ")) {
+            if (str.toLowerCase().contains("ошибка отпра")) {
+                result = "Error: Платеж не выполнен по причине: " + str.substring(str.indexOf("] Code") + 2);
             } else {
-            result = "Error: Платеж не выполнен по причине: " + str;
+                result = "Error: Платеж не выполнен по причине: " + str;
             }
-        } else if (!str.toLowerCase().contains("жида") && !str.toLowerCase().contains("принят")) {
+        } else if (!str.toLowerCase().contains("жида") && !str.toLowerCase().contains("принят") && !str.contains("-001:")) {
             result = "Сообщение о доставке:  Успешно\n" +
                     "Сумма в " + sum.getText().toString() + " переведена на номер "
                     + " " + num.getText().toString();
         } else {
             result = str;
         }
+        Logger.lg("fb " + str);
         return result;
     }
 

@@ -59,7 +59,7 @@ public class DevMain extends AppCompatActivity {
         HashMap<String, String> nums = new HashMap<>();
         HashMap<String, String> sums = new HashMap<>();
 
-        String operDest;
+        String operDestination;
         com.p2plib2.PayLib main;
         static Context cnt;
 
@@ -123,11 +123,9 @@ public class DevMain extends AppCompatActivity {
             textView.setMovementMethod(new ScrollingMovementMethod());
             btnDiactivate();
             /**INI lib*/
-            main = new com.p2plib2.PayLib();
             final CallSmsResult smsResult = new CallSmsResult();
-            // com.p2plib2.common.CommonFunctions.permissionCheck(this, this);
             String result = "";
-            main.updateData(act, cnt, smsResult, true);
+            main = new com.p2plib2.PayLib(act, cnt, smsResult, true);
             /**For available sim cards**/
             /**Operator destination chooser and Ussd receiver**/
             final AlertDialog.Builder builderOperator = new AlertDialog.Builder(cnt);
@@ -219,31 +217,31 @@ public class DevMain extends AppCompatActivity {
             builderOperator.setItems(operators, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    operDest = operators[which];
+                    operDestination = operators[which];
                     if (curOper == "ussd") {
-                        com.p2plib2.Logger.lg("Choose " + operDest + " ");
+                        com.p2plib2.Logger.lg("Choose " + operDestination + " ");
                         String num = null;
                         String sum = null;
                         if (flagogek == true) {
-                            if (nums.containsKey(operDest)) {
-                                num = nums.get(operDest);
+                            if (nums.containsKey(operDestination)) {
+                                num = nums.get(operDestination);
                             }
-                            if (sums.containsKey(operDest)) {
-                                sum = sums.get(operDest);
+                            if (sums.containsKey(operDestination)) {
+                                sum = sums.get(operDestination);
                             }
                         }
-                        main.operation("ussd", true, act, cnt, operDest, num, sum);
+                        main.operation(null, "USSD", act, cnt, operDestination, num, sum, null);
                         operationFlag = true;
                     } else {
                         String n = null;
                         String sum = null;
-                        if (nums.containsKey(operDest)) {
-                            n = nums.get(operDest);
+                        if (nums.containsKey(operDestination)) {
+                            n = nums.get(operDestination);
                         }
-                        if (sums.containsKey(operDest)) {
-                            sum = sums.get(operDest);
+                        if (sums.containsKey(operDestination)) {
+                            sum = sums.get(operDestination);
                         }
-                        main.operation("sms", curSave, act, cnt, operDest, n, sum);
+                        main.operation("SMS", cnt, n, sum, curSave);
                         operationFlag = true;
                     }
                     dialog.dismiss();
@@ -282,7 +280,7 @@ public class DevMain extends AppCompatActivity {
             btnSmsSave.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     main.updateData(act, cnt, smsResult, false);
-                    main.operation("sms", true, act, cnt, operDest, null, null);
+                    main.operation("SMS", act, cnt,null,true, true );
                     operationFlag = true;
                 }
             });
@@ -290,7 +288,7 @@ public class DevMain extends AppCompatActivity {
                 public void onClick(View v) {
                     main.updateData(act, cnt, smsResult, false);
                     com.p2plib2.Logger.lg("unsave sms");
-                    main.operation("sms", false, act, cnt, operDest, null, null);
+                    main.operation("SMS", act, cnt, null,false, false);
                     operationFlag = true;
                 }
             });
