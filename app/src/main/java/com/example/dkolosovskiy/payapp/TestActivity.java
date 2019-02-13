@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -114,7 +115,7 @@ public class TestActivity extends AppCompatActivity implements CompoundButton.On
                             }
                         } else {
                             Logger.lg(" number " + number + "  summa " + summa
-                                    + "  " + operation  + " sim num " + simNum);
+                                    + "  " + operation + " sim num " + simNum);
                             operationId = System.currentTimeMillis();
                             main.operation(operationId, operation.toUpperCase(), act, cnt, "empty", number, summa, simNum);
                         }
@@ -144,10 +145,11 @@ public class TestActivity extends AppCompatActivity implements CompoundButton.On
                 btn.setEnabled(true);
                 Logger.lg(" вып  " + str);
                 if (!str.toLowerCase().contains("жида") && !str.toLowerCase().contains("принят") && !str.contains("-001:")
-                        && !str.toLowerCase().contains("ответ") && !str.toLowerCase().contains("к оплате")) {
+                        && !str.toLowerCase().contains("ответ") && !str.toLowerCase().contains("к оплате")
+                        && !str.toLowerCase().contains("ля подтверждения")) {
                     Intent intent = new Intent(TestActivity.this, Result.class);
                     intent.putExtra("Result", formatResult(str));
-                    if (str.contains("Process ") && !str.contains("Process null") ) {
+                    if (str.contains("Process ") && !str.contains("Process null")) {
                         String sy = str.toLowerCase().replaceAll("\\[", "").replaceAll("\\]", "").trim()
                                 .substring(str.indexOf("process ") + 8);
 //                        Logger.lg("CODE "  + " " +  sy.trim().substring(0, str.indexOf("code")));
@@ -160,7 +162,7 @@ public class TestActivity extends AppCompatActivity implements CompoundButton.On
                     Logger.lg("fgrt");
                     startActivity(intent);
                 }
-            } else if(str.contains("-001:")){
+            } else if (str.contains("-001:")) {
                 btn.setEnabled(true);
             }
         }
@@ -179,13 +181,14 @@ public class TestActivity extends AppCompatActivity implements CompoundButton.On
                 || str.toLowerCase().contains("нельз")
                 || str.toLowerCase().contains("заблокир")
                 || str.toLowerCase().contains("поздн")
-                || str.toLowerCase().contains("недоступ")) {
-            if (str.toLowerCase().contains("ошибка отпра")) {
+                || str.toLowerCase().contains("недоступ")
+                || str.toLowerCase().contains("истек")) {
+            if (str.toLowerCase().contains("ошибка отпра") || str.toLowerCase().contains("error:") ) {
                 result = "Error: Платеж не выполнен по причине: " + str.substring(str.indexOf("] Code") + 2);
             } else {
                 result = "Error: Платеж не выполнен по причине: " + str;
             }
-        } else if (!str.toLowerCase().contains("жида") && !str.toLowerCase().contains("принят") && !str.contains("-001:")) {
+        } else if (!str.toLowerCase().contains("жида") && !str.toLowerCase().contains("принят") && !str.contains("-001:") && !str.toLowerCase().contains("истек")  && !str.toLowerCase().contains("error:") ) {
             result = "Сообщение о доставке:  Успешно\n" +
                     "Сумма в " + sum.getText().toString() + " переведена на номер "
                     + " " + num.getText().toString();
